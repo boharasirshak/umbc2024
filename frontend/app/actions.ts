@@ -29,7 +29,7 @@ export async function submitSymptom(data: FormData) {
 }
 
 export async function getSuggestion(data: FormData) {
-  const response = await fetch(BACKEND_URL + "/generate-recommendations", {
+  const response = await fetch(BACKEND_URL + "/generate-recommendations/", {
     method: "POST",
     body: data,
   });
@@ -39,4 +39,23 @@ export async function getSuggestion(data: FormData) {
   }
 
   return null;
+}
+
+export async function getDiagnosis(data: FormData) {
+  try {
+    const response = await fetch(BACKEND_URL + "/predict-diabetic-retinopathy/", {
+      "method": "POST",
+      "body": data,
+    }
+    );
+
+    if (response.ok) {
+      return await response.json();
+    }
+
+    return null;
+
+  } catch (error) {
+    console.error("File upload failed:", error);
+  }
 }

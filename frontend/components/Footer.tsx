@@ -10,7 +10,7 @@ const Footer = () => {
             >
               <img src="/images/logo.png" className="h-8" alt="Logo" />
               <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
-                WhatTheHealth.AI
+                WhatTheHealth.us
               </span>
             </a>
           </div>
@@ -18,7 +18,7 @@ const Footer = () => {
           <span className="block text-sm text-gray-500 dark:text-gray-400 sm:text-center">
             © 2024{" "}
             <a href="https://flowbite.com/" className="hover:underline">
-              WhatTheHealth.AI™
+              WhatTheHealth.us™
             </a>
             . All Rights Reserved.
           </span>

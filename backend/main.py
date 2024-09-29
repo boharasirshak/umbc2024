@@ -1,8 +1,10 @@
 import io
+from dotenv import load_dotenv
 from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 import spacy
 import speech_recognition as sr
 import openai
+import os
 import cv2
 import numpy as np
 from pydub import AudioSegment
@@ -10,6 +12,7 @@ import pandas as pd
 import joblib
 from spacy.matcher import PhraseMatcher
 
+load_dotenv()
 recognizer = sr.Recognizer()
 app = FastAPI()
 nlp = spacy.load("en_core_web_sm")
@@ -17,7 +20,7 @@ model = joblib.load("models/model.pkl")
 label_encoder = joblib.load("models/label_encoder.pkl")
 diabetic_model = joblib.load("models/diabetic_model.pkl")
 
-openai.api_key = "YOUR_OPENAI_API_KEY"
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 symptom_list = [
     "Upper abdominal pain",
@@ -392,20 +395,18 @@ async def predict_diagnosis(request: Request):
     }
 
 
+@app.post("/predict-diabetic-retinopathy/")
 async def predict_diabetic_retinopathy(image_file: UploadFile = File(...)):
     image_bytes = await image_file.read()
     nparr = np.frombuffer(image_bytes, np.uint8)
     image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
     resized_image = cv2.resize(gray_image, (64, 64))
-
     flattened_image = resized_image.reshape(1, -1)
 
     prediction = diabetic_model.predict(flattened_image)
 
     if prediction == 1:
-        return {"result": "You shows signs of Diabetic Retinopathy"}
+        return {"result": "You have signs of Diabetic Retinopathy"}
     else:
-        return {"result": "You do not show signs of Diabetic Retinopathy"}
+        return {"result": "You do not have signs of Diabetic Retinopathy"}
