@@ -15,7 +15,7 @@ const Header = () => {
           </a>
           <div className="flex items-center lg:order-2">
             <a
-              href="/dashboard"
+              href="/symptom-analyzer"
               className="bg-primary-700 hover:bg-primary-800 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 mr-2 rounded-lg px-4 py-2 text-sm font-medium text-white focus:outline-none focus:ring-4 lg:px-5 lg:py-2.5"
             >
               Check Now
@@ -61,7 +61,7 @@ const Header = () => {
             <ul className="mt-4 flex flex-col font-medium lg:mt-0 lg:flex-row lg:space-x-8">
               <li>
                 <a
-                  href="#"
+                  href="/symptom-analyzer"
                   className="lg:hover:text-primary-700 block border-b border-gray-100 py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent lg:dark:hover:text-white"
                   aria-current="page"
                 >
@@ -70,7 +70,7 @@ const Header = () => {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="/diabetic-eye-detection"
                   className="lg:hover:text-primary-700 block border-b border-gray-100 py-2 pl-3 pr-4 text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent lg:dark:hover:text-white"
                 >
                   Diabetic Detection
