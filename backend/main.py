@@ -2,6 +2,9 @@ import io
 from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 import spacy
 import speech_recognition as sr
+import openai
+import cv2
+import numpy as np
 from pydub import AudioSegment
 import pandas as pd
 import joblib
@@ -10,42 +13,11 @@ from spacy.matcher import PhraseMatcher
 recognizer = sr.Recognizer()
 app = FastAPI()
 nlp = spacy.load("en_core_web_sm")
-model = joblib.load("model.pkl")
-label_encoder = joblib.load("label_encoder.pkl")
+model = joblib.load("models/model.pkl")
+label_encoder = joblib.load("models/label_encoder.pkl")
+diabetic_model = joblib.load("models/diabetic_model.pkl")
 
-import openai
-
-# OpenAI API key
 openai.api_key = "YOUR_OPENAI_API_KEY"
-
-
-@app.get("/generate-recommendations/")
-async def generate_recommendations(diseases, age, height, weight, gender):
-    # Format the input data
-    personal_info = f"Patient details: Age: {age}, Height: {height} cm, Weight: {weight} kg, Gender: {gender}."
-    disease_info = f"The patient is diagnosed with the following conditions: {', '.join(diseases)}."
-
-    prompt = f"""
-    {personal_info} {disease_info}
-
-    Based on the patient's profile and medical conditions, please provide:
-    1. Future health predictions.
-    2. Possible recommendations to improve their health.
-    3. Lifestyle changes, diet, or medical treatment suggestions.
-    """
-
-    response = openai.Completion.create(
-        engine="text-davinci-003",  # Use the latest GPT model or any model of your choice
-        prompt=prompt,
-        max_tokens=500,  # You can adjust this based on the desired length
-        temperature=0.7,  # Adjust temperature for creativity level
-    )
-
-    # Extract the generated text from the response
-    recommendation = response.choices[0].text.strip()
-
-    return recommendation
-
 
 symptom_list = [
     "Upper abdominal pain",
@@ -307,6 +279,34 @@ patterns = [nlp(symptom.lower()) for symptom in symptom_list]
 matcher.add("SymptomMatcher", patterns)
 
 
+@app.get("/generate-recommendations/")
+async def generate_recommendations(diseases, age, height, weight, gender):
+    # Format the input data
+    personal_info = f"Patient details: Age: {age}, Height: {height} cm, Weight: {weight} kg, Gender: {gender}."
+    disease_info = f"The patient is diagnosed with the following conditions: {', '.join(diseases)}."
+
+    prompt = f"""
+    {personal_info} {disease_info}
+
+    Based on the patient's profile and medical conditions, please provide:
+    1. Future health predictions.
+    2. Possible recommendations to improve their health.
+    3. Lifestyle changes, diet, or medical treatment suggestions.
+    """
+
+    response = openai.Completion.create(
+        engine="text-davinci-003",  # Use the latest GPT model or any model of your choice
+        prompt=prompt,
+        max_tokens=500,  # You can adjust this based on the desired length
+        temperature=0.7,  # Adjust temperature for creativity level
+    )
+
+    # Extract the generated text from the response
+    recommendation = response.choices[0].text.strip()
+
+    return recommendation
+
+
 @app.post("/voice-to-text/")
 async def voice_to_text(file: UploadFile = File(...)):
     try:
@@ -352,9 +352,7 @@ async def predict_diagnosis(request: Request):
     standardized_symptoms = set()
     for symptom in extracted_symptoms:
         if symptom in symptom_synonyms:
-            standardized_symptoms.add(
-                symptom_synonyms[symptom]
-            )  # Map to standard symptom
+            standardized_symptoms.add(symptom_synonyms[symptom])
         else:
             standardized_symptoms.add(symptom)
 
@@ -365,10 +363,7 @@ async def predict_diagnosis(request: Request):
             index = [s.lower() for s in symptom_list].index(symptom)
             symptom_values[index] = 1  # Set symptom presence to 1
 
-    # Create a DataFrame with the same feature names as used during training
     symptoms_df = pd.DataFrame([symptom_values], columns=symptom_list)
-
-    # Make a prediction using the model
     probabilities = model.predict_proba(symptoms_df)[0]
 
     # Get the list of all possible diagnoses
@@ -392,8 +387,25 @@ async def predict_diagnosis(request: Request):
     return {
         "user_input": user_input,
         "extracted_symptoms": list(extracted_symptoms),
-        "standardized_symptoms": list(
-            standardized_symptoms
-        ),  # Show standardized symptoms
-        "diagnosis_probabilities": sorted_diagnosis_probabilities,  # List all probabilities including those above cutoff
+        "standardized_symptoms": list(standardized_symptoms),
+        "diagnosis_probabilities": sorted_diagnosis_probabilities,
     }
+
+
+async def predict_diabetic_retinopathy(image_file: UploadFile = File(...)):
+    image_bytes = await image_file.read()
+    nparr = np.frombuffer(image_bytes, np.uint8)
+    image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    resized_image = cv2.resize(gray_image, (64, 64))
+
+    flattened_image = resized_image.reshape(1, -1)
+
+    prediction = diabetic_model.predict(flattened_image)
+
+    if prediction == 1:
+        return {"result": "You shows signs of Diabetic Retinopathy"}
+    else:
+        return {"result": "You do not show signs of Diabetic Retinopathy"}
