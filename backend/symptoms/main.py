@@ -295,6 +295,11 @@ async def voice_to_text(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.options("/predict-symptoms/")
+async def options(request: Request):
+    return {"message": "This is an OPTIONS response"}
+
+
 @app.post("/predict-symptoms/")
 async def predict_diagnosis(request: Request):
     # Get user input text from the request
@@ -331,9 +336,6 @@ async def predict_diagnosis(request: Request):
     symptoms_df = pd.DataFrame([symptom_values], columns=symptom_list)
 
     # Make a prediction using the model
-    prediction = model.predict(symptoms_df)
-
-    # Get the probabilities of each diagnosis (class)
     probabilities = model.predict_proba(symptoms_df)[0]
 
     # Get the list of all possible diagnoses
@@ -348,19 +350,17 @@ async def predict_diagnosis(request: Request):
         if prob > probability_cutoff
     }
 
+    # Sort the diagnosis probabilities in descending order
     sorted_diagnosis_probabilities = dict(
         sorted(diagnosis_probabilities.items(), key=lambda item: item[1], reverse=True)
     )
 
-    # Find the predicted diagnosis (with highest probability)
-    predicted_diagnosis = label_encoder.inverse_transform(prediction)
-
+    # Return the results with only diagnosis probabilities
     return {
         "user_input": user_input,
         "extracted_symptoms": list(extracted_symptoms),
         "standardized_symptoms": list(
             standardized_symptoms
         ),  # Show standardized symptoms
-        "predicted_diagnosis": predicted_diagnosis[0],
-        "diagnosis_probabilities": sorted_diagnosis_probabilities,
+        "diagnosis_probabilities": sorted_diagnosis_probabilities,  # List all probabilities including those above cutoff
     }
