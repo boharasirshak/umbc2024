@@ -7,8 +7,6 @@ export async function submitSymptom(data: FormData) {
     text: data.get("text"),
   };
 
-  console.log(submitData);
-
   const response = await fetch(BACKEND_URL + "/predict-symptoms/", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -28,4 +26,17 @@ export async function submitSymptom(data: FormData) {
 
     return symptoms;
   }
+}
+
+export async function getSuggestion(data: FormData) {
+  const response = await fetch(BACKEND_URL + "/generate-recommendations", {
+    method: "POST",
+    body: data,
+  });
+
+  if (response.ok) {
+    return await response.json();
+  }
+
+  return null;
 }

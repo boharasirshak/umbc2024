@@ -13,6 +13,39 @@ nlp = spacy.load("en_core_web_sm")
 model = joblib.load("model.pkl")
 label_encoder = joblib.load("label_encoder.pkl")
 
+import openai
+
+# OpenAI API key
+openai.api_key = "YOUR_OPENAI_API_KEY"
+
+
+@app.get("/generate-recommendations/")
+async def generate_recommendations(diseases, age, height, weight, gender):
+    # Format the input data
+    personal_info = f"Patient details: Age: {age}, Height: {height} cm, Weight: {weight} kg, Gender: {gender}."
+    disease_info = f"The patient is diagnosed with the following conditions: {', '.join(diseases)}."
+
+    prompt = f"""
+    {personal_info} {disease_info}
+
+    Based on the patient's profile and medical conditions, please provide:
+    1. Future health predictions.
+    2. Possible recommendations to improve their health.
+    3. Lifestyle changes, diet, or medical treatment suggestions.
+    """
+
+    response = openai.Completion.create(
+        engine="text-davinci-003",  # Use the latest GPT model or any model of your choice
+        prompt=prompt,
+        max_tokens=500,  # You can adjust this based on the desired length
+        temperature=0.7,  # Adjust temperature for creativity level
+    )
+
+    # Extract the generated text from the response
+    recommendation = response.choices[0].text.strip()
+
+    return recommendation
+
 
 symptom_list = [
     "Upper abdominal pain",

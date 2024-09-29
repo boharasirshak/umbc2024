@@ -2,24 +2,29 @@
 
 import SymptomTable from "@/components/SymptomTable";
 import { useState } from "react";
-import { submitSymptom } from "../actions";
+import { getSuggestion, submitSymptom } from "../actions";
 
 interface SymptomData {
   name: string;
   probability: number;
 }
 
-interface SymptomTableProps {
-  symptoms: SymptomData[];
-}
-
 export default function DashboardPage() {
   const [symptom, setSymptom] = useState<SymptomData[]>();
+  const [suggestion, setSuggestion] = useState<string>();
 
   async function handleSubmit(data: FormData) {
     const symptoms: SymptomData[] | undefined = await submitSymptom(data);
     if (symptoms) {
       setSymptom(symptoms);
+      await createSuggestion(data);
+    }
+  }
+
+  async function createSuggestion(data: FormData) {
+    const sugg: string | null = await getSuggestion(data);
+    if (sugg) {
+      setSuggestion(sugg);
     }
   }
 
@@ -138,6 +143,22 @@ export default function DashboardPage() {
         </div>
       </section>
       {symptom && <SymptomTable symptoms={symptom} />}
+
+      {suggestion && (
+        <div className="flex flex-row items-center justify-center gap-2.5">
+          <div className="leading-1.5 flex w-full max-w-[320px] flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4 dark:bg-gray-700">
+            <div className="flex items-center space-x-2 rtl:space-x-reverse">
+              <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                Suggestion
+              </span>
+              <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                {new Date().toLocaleTimeString()}
+              </span>
+            </div>
+            <p className="py-2.5 text-sm font-normal text-gray-900 dark:text-white"></p>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
