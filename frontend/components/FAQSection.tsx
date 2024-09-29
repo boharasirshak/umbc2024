@@ -83,7 +83,7 @@ const FAQSection = () => {
                   >
                     contact us
                   </a>{" "}
-                  and we'll help you out as soon as we can.
+                  and we will help you out as soon as we can.
                 </p>
               </div>
               <div className="mb-10">
@@ -116,7 +116,7 @@ const FAQSection = () => {
                   >
                     contact us
                   </a>{" "}
-                  and we'll help you out as soon as we can.
+                  and we will help you out as soon as we can.
                 </p>
               </div>
             </div>

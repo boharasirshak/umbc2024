@@ -4,7 +4,6 @@ interface SymptomData {
 }
 
 const SymptomTable = ({ symptoms }: { symptoms: SymptomData[] }) => {
-  console.log(symptoms);
   return (
     <>
       <h1 className="mb-2 flex flex-row justify-center text-2xl font-bold">
@@ -25,7 +24,7 @@ const SymptomTable = ({ symptoms }: { symptoms: SymptomData[] }) => {
                     </th>
                   </tr>
                   {symptoms.map((symptom) => (
-                    <tr>
+                    <tr key={symptom.name.length * symptom.probability}>
                       <th scope="col" className="px-4 py-3">
                         {symptom.name}
                       </th>
