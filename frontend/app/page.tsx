@@ -20,7 +20,7 @@ export default function Home() {
       />
 
       <CTASection
-        title="Diabetic Eye Detection"
+        title="Diabetic Retnoapthy Detection"
         description="Upload an image of your eye and get a prediction of whether you have diabetic retinopathy."
         ctaLink="/diabetic-eye-detection"
         ctaText="Get started"

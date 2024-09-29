@@ -47,8 +47,8 @@ const FAQSection = () => {
                   How does the Diabetic Eye Detection work?
                 </h3>
                 <p className="text-gray-500 dark:text-gray-400">
-                  Diabetic Eye Detection uses a machine learning model to
-                  predict whether you have diabetic retinopathy based on an
+                  Diabetic Retinopathy Detection uses a machine learning model
+                  to predict whether you have diabetic retinopathy based on an
                   image of your eye (retina).
                 </p>
               </div>
@@ -71,7 +71,8 @@ const FAQSection = () => {
                   Is it free to use?
                 </h3>
                 <p className="text-gray-500 dark:text-gray-400">
-                  Absolutely! Both Symptom Analyzer and Diabetic Eye Detection.
+                  Absolutely! Both Symptom Analyzer and Diabetic Retinopathy
+                  Detection.
                 </p>
                 <p className="text-gray-500 dark:text-gray-400">
                   Feel free to{" "}

@@ -18,19 +18,19 @@ const ComingUp = () => {
                 <img
                   className="w-full rounded-lg sm:rounded-none sm:rounded-l-lg"
                   src="images/alzimersDetection.webp"
-                  alt="Alzimers Avatar"
+                  alt="Alzheimer Avatar"
                 />
               </a>
               <div className="p-5">
                 <h3 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  <a href="#">Alzimers Analyzer</a>
+                  <a href="#">Alzheimers Analyzer</a>
                 </h3>
                 <span className="text-gray-500 dark:text-gray-400">
                   A continous and real-time analyzer.
                 </span>
                 <p className="mb-4 mt-3 font-light text-gray-500 dark:text-gray-400">
                   Analyze your eyes movements daily and get a prediction of
-                  alzimers in early stage.
+                  alzheimers in early stage.
                 </p>
               </div>
             </div>

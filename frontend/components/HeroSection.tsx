@@ -32,9 +32,9 @@ const HeroSection = () => {
           We Transform Lives of Patients and Doctors.
         </h1>
         <p className="mb-8 text-lg font-normal text-gray-500 dark:text-gray-400 sm:px-16 lg:text-xl xl:px-48">
-          Here are WhatTheHealth.US we are dedicated to bring technologies like
-          AI, NLP and Computer Vision to transform the healthcare industry. We
-          make lives for patients and doctors easier.
+          Here are whatthehealth.us we are dedicated to bring technologies like
+          AI, NLP and Computer Vision to transform the healthcare industry by
+          helping early detection of diseases.
         </p>
         <div className="mb-8 flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-x-4 sm:space-y-0 lg:mb-16">
           <a
