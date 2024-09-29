@@ -20,5 +20,5 @@ clf = RandomForestClassifier()
 clf.fit(X_train, y_train)
 
 
-joblib.dump(clf, "../model.pkl")
+joblib.dump(clf, "model.pkl")
 joblib.dump(le, "label_encoder.pkl")
